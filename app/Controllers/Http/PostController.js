@@ -21,9 +21,10 @@ class PostController {
   async index({ request }) {
     const { sort, sortDirection } = request.get();
 
-    const posts = await Database.table('posts').orderBy(
-      `${sort ? sort : 'id'}`,
-      `${sortDirection ? sortDirection : 'asc'}`
+    const sortBy = !sort || sort === 'upvote' ? 'upvote' : `LOWER(${sort})`;
+
+    const posts = await Database.table('posts').orderByRaw(
+      `${sortBy} ${sortDirection ? sortDirection : 'desc'}`
     );
 
     return posts;
